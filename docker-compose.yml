@@ -1,0 +1,36 @@
+version: "3.6"
+services:
+        mysql-prod:
+                image: mysql:5
+                volumes:
+                        - /home/slga/docker/prodheha/data:/var/lib/mysql
+                        - /home/slga/docker/prodheha/conf:/etc/mysql/conf.d
+                container_name: mysql-prod
+                hostname: mysql-prod
+                ports:
+                        - "23306:3306"
+                networks:
+                        - mynet
+                enviroment:
+                        - MYSQL_ROOT_PASSWORD=my-secret-pw
+                        - MYSQL_DATABASE=db
+                        - MYSQL_USER=user
+                        - MYSQL_PASSWORD=password-123321-Pass
+                        - TZ=Asia/Shanghai
+        spring-boot:
+                image: my-java-app
+                build: ./
+                depends_on:
+                        - mysql-prod
+                command: ["java", "-jar", "-agentpath:/usr/src/myapp/libjrebel64.so", "-Drebel.remoting_plugin=true", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=15005", "-Dserver.port=15006"  "payment-app.jar"]
+                ports:
+                        - "15004:15004"
+                        - "15005:15005"
+                        - "15005:15006"
+                networks:
+                        - mynet
+                
+networks:
+    mynet:
+        external: true
+        
