@@ -111,6 +111,10 @@ docker-compose up -d
 # 停止服务
 docker-compose stop
 
+# 停止单个服务
+➜  prodheha docker-compose stop spring-boot-app
+
+
 # mysqldump使用方法
 $ docker exec some-mysql sh -c 'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"' > /some/path/on/your/host/all-databases.sql
 
@@ -120,5 +124,24 @@ $ docker exec some-mysql sh -c 'exec mysqldump --all-databases -uroot -p"$MYSQL_
 success
 ➜  prodheha sudo firewall-cmd --reload
 success
+
+```
+
+
+连接到docker容器进行sql操作
+
+```bash
+➜  ~ docker exec -it -e TZ=Asia/Shanghai mysql-prod /bin/bash
+
+root@mysql-prod:/# mysql -uroot -pmy-secret-pw
+```
+
+```sql
+
+mysql> grant super on *.* to user@'%' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.00 sec)
 
 ```
